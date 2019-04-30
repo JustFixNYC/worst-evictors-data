@@ -19,7 +19,7 @@ schema:
     BoroCode: char(1)
     ExecutedDate: date
     Year: smallint
-    ResidentialCommercialInd: text
+    EvictionType: text
     MarshalFirstName: text
     MarshalLastName: text
     ScheduleStatus: text
