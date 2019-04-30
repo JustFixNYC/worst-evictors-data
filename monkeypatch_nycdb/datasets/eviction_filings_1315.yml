@@ -1,0 +1,11 @@
+---
+files:
+  -
+    url:
+    dest: eviction_filings_1315.csv
+schema:
+  table_name: eviction_filings_1315
+  fields:
+    bin: int
+    bbl: char(10)
+    evictions: int

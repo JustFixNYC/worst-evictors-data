@@ -32,9 +32,10 @@ SQLFILE_PATHS = [
 NYCDB_DATASET_DEPENDENCIES = [
     'pluto_18v1',
     'rentstab_summary',
-    # These are unofficial datasets we monkeypatched in.
+    # These are custom datasets we monkeypatched in.
     'marshal_evictions_18',
     'hpd_head_officers',
+    'eviction_filings_1315'
 ]
 
 
@@ -201,7 +202,7 @@ class NycDbBuilder:
         for sqlpath in SQLFILE_PATHS:
             print(f"Running {sqlpath.name}...")
             # TODO: Uncomment this.
-            # self.run_sql_file(sqlpath)
+            self.run_sql_file(sqlpath)
 
 
 def dbshell(db: DbContext):
