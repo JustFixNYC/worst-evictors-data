@@ -1,6 +1,7 @@
 venv/
 .mypy_cache/
 .vscode/
+__pycache__/
 
 # NYCDB datasets
 data/pluto_18v1.zip

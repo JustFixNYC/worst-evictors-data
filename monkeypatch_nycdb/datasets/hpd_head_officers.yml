@@ -1,0 +1,12 @@
+---
+files:
+  -
+    url:
+    dest: hpd_head_officers.csv
+schema:
+  table_name: hpd_head_officers
+  fields:
+    arrayagg: int[]
+    firstname: text
+    lastname: text
+    bbl: char(10)
