@@ -3,6 +3,7 @@ import sys
 import subprocess
 import argparse
 import time
+import csv
 import yaml
 from urllib.parse import urlparse
 from typing import NamedTuple, Any, Tuple, Optional, Dict, List
@@ -25,9 +26,7 @@ DATA_DIR = ROOT_DIR / 'data'
 
 SQL_DIR = ROOT_DIR / 'sql'
 
-SQLFILE_PATHS = [
-    SQL_DIR / 'worst-evictors.sql'
-]
+GENLIST_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list.sql'
 
 NYCDB_DATASET_DEPENDENCIES = [
     'pluto_18v1',
@@ -199,15 +198,32 @@ class NycDbBuilder:
         for dataset in NYCDB_DATASET_DEPENDENCIES:
             self.ensure_dataset(dataset, force_refresh=force_refresh)
 
-        for sqlpath in SQLFILE_PATHS:
-            print(f"Running {sqlpath.name}...")
-            self.run_sql_file(sqlpath)
-
 
 def dbshell(db: DbContext):
     env, args = db.get_pg_env_and_args()
     retval = subprocess.call(['psql', *args], env=env)
     sys.exit(retval)
+
+
+def csvify_lists_in_row(row: List[Any]) -> List[Any]:
+    new_row: List[Any] = []
+    for item in row:
+        if isinstance(item, list):
+            item = ', '.join(item)
+        new_row.append(item)
+    return new_row
+
+
+def genlist(db: DbContext):
+    sys.stdout.reconfigure(encoding='utf-8')  # type: ignore
+    writer = csv.writer(sys.stdout)
+    with db.connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(GENLIST_SQLFILE_PATH.read_text())
+            colnames = [desc[0] for desc in cursor.description]
+            writer.writerow(colnames)
+            for row in cursor:
+                writer.writerow(csvify_lists_in_row(row))
 
 
 if __name__ == '__main__':
@@ -229,6 +245,9 @@ if __name__ == '__main__':
     parser_dbshell = subparsers.add_parser('dbshell')
     parser_dbshell.set_defaults(cmd='dbshell')
 
+    parser_genlist = subparsers.add_parser('list')
+    parser_genlist.set_defaults(cmd='genlist')
+
     args = parser.parse_args()
 
     database_url: str = args.database_url
@@ -241,6 +260,8 @@ if __name__ == '__main__':
         dbshell(db)
     elif cmd == 'builddb':
         NycDbBuilder(db).build(force_refresh=False)
+    elif cmd == 'genlist':
+        genlist(db)
     else:
         parser.print_help()
         sys.exit(1)

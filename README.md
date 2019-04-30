@@ -46,9 +46,15 @@ export DATABASE_URL=postgres://nycdb:nycdb@localhost/nycdb
 
 ### Build everything
 
-To build the final database and calculate the worst evictors
+To build the database tables needed to calculate the worst evictors
 data, run:
 
 ```
 python worst.py builddb
+```
+
+Then, to generate a CSV of worst evictors, run:
+
+```
+python worst.py list > evictors.csv
 ```
