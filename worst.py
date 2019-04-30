@@ -34,6 +34,7 @@ NYCDB_DATASET_DEPENDENCIES = [
     'rentstab_summary',
     # These are unofficial datasets we monkeypatched in.
     'marshal_evictions_18',
+    'hpd_head_officers',
 ]
 
 
@@ -197,11 +198,10 @@ class NycDbBuilder:
         for dataset in NYCDB_DATASET_DEPENDENCIES:
             self.ensure_dataset(dataset, force_refresh=force_refresh)
 
-        # TODO: Import eviction_filings_1315, hpd_head_officers, marshal_evictions_18.
-
         for sqlpath in SQLFILE_PATHS:
             print(f"Running {sqlpath.name}...")
-            self.run_sql_file(sqlpath)
+            # TODO: Uncomment this.
+            # self.run_sql_file(sqlpath)
 
 
 def dbshell(db: DbContext):
