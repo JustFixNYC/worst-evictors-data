@@ -1,0 +1,7 @@
+venv/
+.mypy_cache/
+.vscode/
+
+# NYCDB datasets
+data/pluto_18v1.zip
+data/changes-summary.csv

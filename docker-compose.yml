@@ -1,0 +1,10 @@
+version: '2'
+services:
+  db:
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=nycdb
+      - POSTGRES_DB=nycdb
+      - POSTGRES_PASSWORD=nycdb
+    ports:
+      - 5432:5432
