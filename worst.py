@@ -115,6 +115,7 @@ class NycDbBuilder:
         self.db = db
         self.data_dir = DATA_DIR
         self.conn = db.connection()
+        self.data_dir.mkdir(parents=True, exist_ok=True)
 
     def call_nycdb(self, *args: str) -> None:
         db = self.db
