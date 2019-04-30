@@ -4,13 +4,17 @@ import subprocess
 import argparse
 import time
 import yaml
-import nycdb.dataset
-from nycdb.utility import list_wrap
 from urllib.parse import urlparse
 from typing import NamedTuple, Any, Tuple, Optional, Dict, List
 from pathlib import Path
 from types import SimpleNamespace
 import psycopg2
+
+import monkeypatch_nycdb.patch
+monkeypatch_nycdb.patch.monkeypatch()
+
+import nycdb.dataset
+from nycdb.utility import list_wrap
 
 
 DEFAULT_DATABASE_URL = 'postgres://nycdb:nycdb@localhost/nycdb'
@@ -28,6 +32,8 @@ SQLFILE_PATHS = [
 NYCDB_DATASET_DEPENDENCIES = [
     'pluto_18v1',
     'rentstab_summary',
+    # These are unofficial datasets we monkeypatched in.
+    'marshal_evictions_18',
 ]
 
 
@@ -117,6 +123,18 @@ class NycDbBuilder:
         self.conn = db.connection()
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
+    def get_nycdb_dataset(self, name: str) -> nycdb.Dataset:
+        db = self.db
+        args = SimpleNamespace(
+            user=db.user,
+            password=db.password,
+            host=db.host,
+            database=db.database,
+            port=str(db.port),
+            root_dir=self.data_dir
+        )
+        return nycdb.Dataset(name, args=args)
+
     def call_nycdb(self, *args: str) -> None:
         db = self.db
         subprocess.check_call(
@@ -161,12 +179,11 @@ class NycDbBuilder:
             self.delete_downloaded_data(*tables)
         if not self.do_tables_exist(*tables):
             print(f"Table {name} not found in the database. Downloading...")
-            self.call_nycdb('--download', name)
+            self.get_nycdb_dataset(name).download_files()
             print(f"Loading {name} into the database...")
-            self.call_nycdb('--load', name)
+            self.get_nycdb_dataset(name).db_import()
         else:
-            print(f"Table {name} already exists. Verifying row count...")
-            self.call_nycdb('--verify', name)
+            print(f"Table {name} already exists.")
 
     def run_sql_file(self, sqlpath: Path) -> None:
         sql = sqlpath.read_text()
