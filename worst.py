@@ -201,7 +201,6 @@ class NycDbBuilder:
 
         for sqlpath in SQLFILE_PATHS:
             print(f"Running {sqlpath.name}...")
-            # TODO: Uncomment this.
             self.run_sql_file(sqlpath)
 
 
