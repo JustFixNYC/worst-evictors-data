@@ -1,7 +1,8 @@
 with head_officer_evictions as (
 	select 
 		concat(firstname,' ',lastname) as head_officer,
-		-- Custom Head Offier groupings: 
+
+-- HPD "Head Officer" groupings derived through research: 
 		case
 			when concat(h.firstname,' ',h.lastname) = any('{JULIUS LAMAR, DAVID MATEO, RAFAL MARKWAT}') 
 				then 'JULIUS LAMAR, DAVID MATEO (ARETE MANAGEMENT)'
@@ -34,9 +35,9 @@ with head_officer_evictions as (
 				then 'MICHAEL NIAMONITAKIS'
 			when concat(h.firstname,' ',h.lastname) = any('{ELY SINGER, JONAH ROSENBERG, SCOTT MITTEL, ANDY FALKIN, 
 															ARI BENEDICT, FAUSTO DIAZ, AVNER SKOCZYLAS, BARRY SENDROVIC, 															JONAH ROSENBERG, ARI BENEDICT, DANIEL BENEDICT}') 
-				then 'ELY SINGER, JONAH ROSENBERG (BRG MANAGEMENT LLC)'
-			when concat(h.firstname,' ',h.lastname) = any('{DONALD HASTINGS, MAGGIE MCCORMICK}') 
-				then 'DONALD HASTINGS, MAGGIE MCCORMICK (KEW GARDENS HILLS, LLC)'
+				then 'ELY SINGER, DANIEL BENEDICT (BRG MANAGEMENT LLC)'
+			when concat(h.firstname,' ',h.lastname) = any('{DONALD HASTINGS, MAGGIE MCCORMICK, DOUGLAS EISENBERG}') 
+				then 'DONALD HASTINGS, DOUGLAS EISENBERG (A&E REAL ESTATE)'
 			when concat(h.firstname,' ',h.lastname)= any('{1635 CARROLL LLC,2509 ATLANTIC REALTY LLC,312 EZ REALTY LLC,	
 						437 BMW LLC, 491 EQUITIES LLC, 682 MONTGOMERY LLC, DEAN PARK LLC, DRAM LLC, GAN EAST LLC, 
 						M WILHELM, MAUNTAUK PARK LLC, MENDY WILHELM, MMS REALTY LLC, PRESIDENT PLAZA LLC, UFARATZTA LLC, 
@@ -44,6 +45,8 @@ with head_officer_evictions as (
 				then 'UFARATZTA LLC'
 			else concat(h.firstname,' ',h.lastname)
 		end as head_officer_group,
+
+-- Supplemental data:
 		h.bbl,
 		p.zipcode,
 		p.unitsres,
@@ -73,80 +76,75 @@ with head_officer_evictions as (
 	where (firstname is not null or lastname is not null)
 )
 
-
 select 
 	head_officer_group,
 	string_agg(distinct head_officer,', ') as head_officer_individuals,
 	
----- --borough-based portfolio calculations
---
+-- Borough-based portfolio calculations 
+---- Key: 
+---- "assoc_bbls" = list of borough-block-lot codes for other buildings owned by the landlord
+---- "portfolio_size" = count of other buildings owned by the landlord
+---- "unitsres" = count of residential units owned by the landlord 
+---- "evictions" = count of executed 2018 Marshals evictions in properties owned by the landlord
+---- "filings" = count of Eviction Filings (from Jan 2013 to June 2015) in properties owned by the landlord
+---- "rs_units" = estimate of rent stabilized units owned by the landlord
+
+
+---- Manhattan RTC Zip Codes:
+
 	array_agg(bbl) filter (where zipcode = any('{10026, 10027, 10025, 10031}')) MN_rtc_assoc_bbls,
---	count(bbl) filter (where zipcode = any('{10026, 10027, 10025, 10031}')) MN_rtc_portfolio_size,
+	count(bbl) filter (where zipcode = any('{10026, 10027, 10025, 10031}')) MN_rtc_portfolio_size,
 	sum(unitsres) filter (where zipcode = any('{10026, 10027, 10025, 10031}')) MN_rtc_unitsres,
 	sum(evictions) filter (where zipcode = any('{10026, 10027, 10025, 10031}')) MN_rtc_evictions,
 	sum(filings) filter (where zipcode = any('{10026, 10027, 10025, 10031}')) MN_rtc_filings,
---	sum(filings) filter (where zipcode = any('{10026, 10027, 10025, 10031}'))::numeric/
---		sum(unitsres) filter (where zipcode = any('{10026, 10027, 10025, 10031}'))::numeric MN_rtc_pct_filed,
 	sum(rs_units) filter (where zipcode = any('{10026, 10027, 10025, 10031}')) MN_rtc_rs_units,
---	sum(rs_units) filter (where zipcode = any('{10026, 10027, 10025, 10031}'))::numeric/
---		sum(unitsres) filter (where zipcode = any('{10026, 10027, 10025, 10031}'))::numeric MN_rtc_pct_rs,
-------	
-----	array_agg(bbl) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_assoc_bbls,
-----	count(bbl) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_portfolio_size,
---	sum(unitsres) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_unitsres,
---	sum(evictions) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_evictions,
---	sum(filings) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_filings,
-----	sum(filings) filter (where zipcode = any('{10457, 10467, 10468, 10462}'))::numeric/
-----		sum(unitsres) filter (where zipcode = any('{10457, 10467, 10468, 10462}'))::numeric BX_rtc_pct_filed,
---	sum(rs_units) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_rs_units,
-----	sum(rs_units) filter (where zipcode = any('{10457, 10467, 10468, 10462}'))::numeric/
-----		sum(unitsres) filter (where zipcode = any('{10457, 10467, 10468, 10462}'))::numeric BX_rtc_pct_rs,
---	
-----	array_agg(bbl) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_assoc_bbls,
-----	count(bbl) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_portfolio_size,
---	sum(unitsres) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_unitsres,
---	sum(evictions) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_evictions,
---	sum(filings) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_filings,
-----	sum(filings) filter (where zipcode = any('{11216, 11221, 11225, 11226}'))::numeric/
-----		sum(unitsres) filter (where zipcode = any('{11216, 11221, 11225, 11226}'))::numeric BK_rtc_pct_filed,
---	sum(rs_units) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_rs_units,
-----	sum(rs_units) filter (where zipcode = any('{11216, 11221, 11225, 11226}'))::numeric/
-----		sum(unitsres) filter (where zipcode = any('{11216, 11221, 11225, 11226}'))::numeric BK_rtc_pct_rs,
---	
---	array_agg(bbl) filter (where zipcode = any('{11433, 11434, 11373, 11385}')) QN_rtc_assoc_bbls,
---	count(bbl) filter (where zipcode = any('{11433, 11434, 11373, 11385}')) QN_rtc_portfolio_size,
+
+
+---- Bronx RTC Zip Codes:
+
+	array_agg(bbl) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_assoc_bbls,
+	count(bbl) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_portfolio_size,
+	sum(unitsres) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_unitsres,
+	sum(evictions) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_evictions,
+	sum(filings) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_filings,
+	sum(rs_units) filter (where zipcode = any('{10457, 10467, 10468, 10462}')) BX_rtc_rs_units,
+
+---- Brooklyn RTC Zip Codes:
+	
+	array_agg(bbl) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_assoc_bbls,
+	count(bbl) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_portfolio_size,
+	sum(unitsres) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_unitsres,
+	sum(evictions) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_evictions,
+	sum(filings) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_filings,
+	sum(rs_units) filter (where zipcode = any('{11216, 11221, 11225, 11226}')) BK_rtc_rs_units,
+
+---- Queens RTC Zip Codes:
+	
+	array_agg(bbl) filter (where zipcode = any('{11433, 11434, 11373, 11385}')) QN_rtc_assoc_bbls,
+	count(bbl) filter (where zipcode = any('{11433, 11434, 11373, 11385}')) QN_rtc_portfolio_size,
 	sum(unitsres) filter (where zipcode = any('{11433, 11434, 11373, 11385}')) QN_rtc_unitsres,
 	sum(evictions) filter (where zipcode = any('{11433, 11434, 11373, 11385}')) QN_rtc_evictions,
 	sum(filings) filter (where zipcode = any('{11433, 11434, 11373, 11385}')) QN_rtc_filings,
---	sum(filings) filter (where zipcode = any('{11433, 11434, 11373, 11385}'))::numeric/
---		sum(unitsres) filter (where zipcode = any('{11433, 11434, 11373, 11385}'))::numeric QN_rtc_pct_filed,
 	sum(rs_units) filter (where zipcode = any('{11433, 11434, 11373, 11385}')) QN_rtc_rs_units,
---	sum(rs_units) filter (where zipcode = any('{11433, 11434, 11373, 11385}'))::numeric/
---		sum(unitsres) filter (where zipcode = any('{11433, 11434, 11373, 11385}'))::numeric QN_rtc_pct_rs,
---		
---	array_agg(bbl) filter (where zipcode = any('{10302, 10303, 10314, 10310}')) SI_rtc_assoc_bbls,
---	count(bbl) filter (where zipcode = any('{10302, 10303, 10314, 10310}')) SI_rtc_portfolio_size,
+
+---- Staten Island RTC Zip Codes:
+
+	array_agg(bbl) filter (where zipcode = any('{10302, 10303, 10314, 10310}')) SI_rtc_assoc_bbls,
+	count(bbl) filter (where zipcode = any('{10302, 10303, 10314, 10310}')) SI_rtc_portfolio_size,
 	sum(unitsres) filter (where zipcode = any('{10302, 10303, 10314, 10310}')) SI_rtc_unitsres,
 	sum(evictions) filter (where zipcode = any('{10302, 10303, 10314, 10310}')) SI_rtc_evictions,
 	sum(filings) filter (where zipcode = any('{10302, 10303, 10314, 10310}')) SI_rtc_filings,
---	sum(filings) filter (where zipcode = any('{10302, 10303, 10314, 10310}'))::numeric/
---		sum(unitsres) filter (where zipcode = any('{10302, 10303, 10314, 10310}'))::numeric SI_rtc_pct_filed,
 	sum(rs_units) filter (where zipcode = any('{10302, 10303, 10314, 10310}')) SI_rtc_rs_units,
---	sum(rs_units) filter (where zipcode = any('{10302, 10303, 10314, 10310}'))::numeric/
---		sum(unitsres) filter (where zipcode = any('{10302, 10303, 10314, 10310}'))::numeric SI_rtc_pct_rs,
---	
-	
- --citywide portfolio calculations
 
---	array_agg(bbl) as citywide_assoc_bbls,
---	count(bbl) as citywide_portfolio_size,
+
+-- Citywide calculations
+
+	array_agg(bbl) as citywide_assoc_bbls,
+	count(bbl) as citywide_portfolio_size,
 	sum(unitsres) as citywide_unitsres,
 	sum(evictions) as citywide_evictions,
 	sum(filings) as citywide_filings,
---	sum(filings)::numeric/sum(unitsres)::numeric as citywide_pct_filed,
-	sum(rs_units) as citywide_rs_units
---	sum(rs_units)::numeric/sum(unitsres)::numeric as citywide_pct_rs		
+	sum(rs_units) as citywide_rs_units	
 					
 from head_officer_evictions 
 group by head_officer_group
-order by QN_rtc_evictions desc nulls last
