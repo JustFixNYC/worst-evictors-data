@@ -61,7 +61,7 @@ python worst.py list > evictors.csv
 
 ## Notes on the Analysis
 
-A description of the methodology for this project can be found on the website's About Page.
+A description of the methodology for this project can be found on the website's [About Page](https://www.worstevictorsnyc.org/about).
 
 ### Grouping HPD Head Officers together
 
