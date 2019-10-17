@@ -1,0 +1,14 @@
+---
+files:
+  -
+    url:
+    dest: hpd_registrations_grouped_by_bbl_dec_18.csv
+schema:
+  table_name: hpd_registrations_grouped_by_bbl_dec_18
+  fields:
+    housenumber: text,
+    streetname: text,
+    zip: text,
+    boro: text,
+    registrationid: integer,
+    bbl: char(10)
