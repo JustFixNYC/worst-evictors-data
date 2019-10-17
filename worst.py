@@ -34,7 +34,9 @@ NYCDB_DATASET_DEPENDENCIES = [
     # These are custom datasets we monkeypatched in.
     'marshal_evictions_18',
     'hpd_head_officers',
-    'eviction_filings_1315'
+    'eviction_filings_1315',
+    'hpd_contacts_dec_18',
+    'hpd_registrations_grouped_by_bbl_dec_18'
 ]
 
 
