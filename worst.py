@@ -26,7 +26,11 @@ DATA_DIR = ROOT_DIR / 'data'
 
 SQL_DIR = ROOT_DIR / 'sql'
 
-GENLIST_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list.sql'
+# By default, the output dataset from the db is the citywide evictors data.
+# Toggle the comments below to switch to RTC:
+
+# GENLIST_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-rtc-zips.sql'
+GENLIST_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide.sql'
 
 NYCDB_DATASET_DEPENDENCIES = [
     'pluto_18v1',
