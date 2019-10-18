@@ -26,11 +26,9 @@ DATA_DIR = ROOT_DIR / 'data'
 
 SQL_DIR = ROOT_DIR / 'sql'
 
-# By default, the output dataset from the db is the citywide evictors data.
-# Toggle the comments below to switch to RTC:
+GENLIST_RTC_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-rtc-zips.sql'
 
-# GENLIST_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-rtc-zips.sql'
-GENLIST_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide.sql'
+GENLIST_CITYWIDE_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide.sql'
 
 NYCDB_DATASET_DEPENDENCIES = [
     'pluto_18v1',
@@ -220,12 +218,12 @@ def csvify_lists_in_row(row: List[Any]) -> List[Any]:
     return new_row
 
 
-def genlist(db: DbContext):
+def genlist(db: DbContext, sqlfile_path: Path):
     sys.stdout.reconfigure(encoding='utf-8')  # type: ignore
     writer = csv.writer(sys.stdout)
     with db.connection() as conn:
         with conn.cursor() as cursor:
-            cursor.execute(GENLIST_SQLFILE_PATH.read_text())
+            cursor.execute(sqlfile_path.read_text())
             colnames = [desc[0] for desc in cursor.description]
             writer.writerow(colnames)
             for row in cursor:
@@ -251,8 +249,11 @@ if __name__ == '__main__':
     parser_dbshell = subparsers.add_parser('dbshell')
     parser_dbshell.set_defaults(cmd='dbshell')
 
-    parser_genlist = subparsers.add_parser('list')
-    parser_genlist.set_defaults(cmd='genlist')
+    parser_genlist_rtc = subparsers.add_parser('list:rtc')
+    parser_genlist_rtc.set_defaults(cmd='genlist_rtc')
+
+    parser_genlist_citywide = subparsers.add_parser('list:citywide')
+    parser_genlist_citywide.set_defaults(cmd='genlist_citywide')
 
     args = parser.parse_args()
 
@@ -266,8 +267,10 @@ if __name__ == '__main__':
         dbshell(db)
     elif cmd == 'builddb':
         NycDbBuilder(db).build(force_refresh=False)
-    elif cmd == 'genlist':
-        genlist(db)
+    elif cmd == 'genlist_rtc':
+        genlist(db, GENLIST_RTC_SQLFILE_PATH)
+    elif cmd == 'genlist_citywide':
+        genlist(db, GENLIST_CITYWIDE_SQLFILE_PATH)
     else:
         parser.print_help()
         sys.exit(1)
