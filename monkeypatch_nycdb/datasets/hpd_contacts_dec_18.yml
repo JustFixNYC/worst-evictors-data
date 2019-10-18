@@ -2,7 +2,7 @@
 files:
   -
     url:
-    dest: hpd_contacts.csv
+    dest: hpd_contacts_dec_18.csv
 schema:
   table_name: hpd_contacts_dec_18
   fields:
