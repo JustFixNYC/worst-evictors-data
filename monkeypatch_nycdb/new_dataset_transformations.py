@@ -11,3 +11,11 @@ def hpd_head_officers(dataset):
 
 def eviction_filings_1315(dataset):
     return to_csv(dataset.files[0].dest)
+
+
+def hpd_contacts_dec_18(dataset):
+    return to_csv(dataset.files[0].dest)
+
+
+def hpd_registrations_grouped_by_bbl_dec_18(dataset):
+    return to_csv(dataset.files[0].dest)

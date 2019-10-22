@@ -1,0 +1,23 @@
+---
+files:
+  -
+    url:
+    dest: hpd_contacts_dec_18.csv
+schema:
+  table_name: hpd_contacts_dec_18
+  fields:
+    registrationcontactID: integer
+    registrationID: integer
+    type: text
+    ContactDescription: text
+    CorporationName: text
+    Title: text
+    FirstName: text
+    MiddleInitial: text
+    LastName: text
+    BusinessHouseNumber: text
+    BusinessStreetName: text
+    BusinessApartment: text
+    BusinessCity: text
+    BusinessState: text
+    BusinessZip: text

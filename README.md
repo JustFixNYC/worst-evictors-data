@@ -53,10 +53,16 @@ data, run:
 python worst.py builddb
 ```
 
-Then, to generate a CSV of worst evictors, run:
+Then, to generate a CSV of worst evictors in RTC zipcodes, run:
 
 ```
-python worst.py list > evictors.csv
+python worst.py list:rtc > evictors-rtc.csv
+```
+
+Or to generate a CSV of worst evictors city-wide, run:
+
+```
+python worst.py list:citywide > evictors-citywide.csv
 ```
 
 ## Notes on the Analysis

@@ -1,0 +1,1 @@
+CREATE INDEX hpd_registrations_grouped_by_bbl_dec_18_idx on hpd_registrations_grouped_by_bbl_dec_18 (bbl);
