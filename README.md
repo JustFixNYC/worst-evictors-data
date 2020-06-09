@@ -53,27 +53,36 @@ data, run:
 python worst.py builddb
 ```
 
-Then, to generate a CSV of raw data for the RTC Worst Evictors list, run:
+Then, to generate a CSV of raw data for the 2019 Worst Evictors list, run:
 
 ```
-python worst.py list:rtc > rtc-evictors.csv
+python worst.py list:citywide-19 > citywide-evictors-19.csv
 ```
 
-Also, to generate a CSV of raw data for the Citywide Evictors list, run:
+Also, to generate CSVs of raw data citywide and rtc-specific Worst Evictors lists in 2018, run:
 
 ```
-python worst.py list:citywide > citywide-evictors.csv
+python worst.py list:citywide-18 > citywide-evictors-18.csv
+python worst.py list:rtc-18 > rtc-evictors-18.csv
 ```
 
 ## Notes on the Analysis
 
 A description of the methodology for this project can be found on the website's [About Page](https://www.worstevictorsnyc.org/about).
 
-### Grouping HPD Head Officers together (RTC List) 
+### Automating the Owner Grouping Process (Citywide List, 2018 and 2019) 
 
-Our methodology for making the RTC worst evictors list combined data analysis from publicly available data with a community research-driven approach, using on-the-ground knowledge of tenants and tenant organizers. We found it important to use a variety of tools and strategies when generating this list as an effort to make the most comprehensive survey of who is evicting New Yorkers, as well as to provide a list that would help and encourage New Yorkers to organize.
+Our methodology for making the worst evictors list combines data analysis from publicly available data with a community research-driven approach, using on-the-ground knowledge of tenants and tenant organizers. We find it important to use a variety of tools and strategies when generating this list as an effort to make the most comprehensive survey of who is evicting New Yorkers, as well as to provide a list that would help and encourage New Yorkers to organize.
 
-We conducted our own research using the [Who Owns What tool](https://whoownswhat.justfix.nyc/) to group HPD Head Officers together that shared a common business address, and also relied on first-person accounts of shared business affiliation from tenant organizers in our network.
+To make our Citywide Worst Evictors List, we use public HPD registration data to find the registered 'Head Officer', 'Individual Owner', and 'Corporate Owner' contact names for each registered property in New York City. We then group together contact names that share a common business address to coalesce properties that have common ownership. We mostly use SQL to automate most of this process of grouping owner contact names together, while still incorporating on-the-ground knowledge from tenants and tenant organizers.
+
+The specific SQL code that groups owner names for the Citywide list can be found in the [worst-evictors-list-citywide.sql file](https://github.com/JustFixNYC/worst-evictors-data/blob/master/sql/worst-evictors-list-citywide.sql) in this repository. You can look at the specific groupings of owner names in the output CSV file generated using the command outlined above. Note that duplicate and near-duplciate portfolios were filtered out to make the [published Citywide list](https://www.worstevictorsnyc.org/evictors-list/citywide/) on the Worst Evictors website.
+
+**Are we missing anybody?** If you think that there are other Head Officers related to the companies we are featuring in our RTC Worst Evictors List, or if you think we made a mistake somewhere, send us a suggestion via our [Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLSfOwTTtRuCSb06_gYR7Zjjm-c0BWXzJlriJHRl8JwDVEnc-0g/viewform?usp=sf_link). 
+
+### Grouping HPD Head Officers together through research (2018 RTC List only) 
+
+For the RTC Worst Evictors list of 2018— our first iteration of the project— we conducted our own research using the [Who Owns What tool](https://whoownswhat.justfix.nyc/) to group HPD Head Officers together that shared a common business address, while also relying on first-person accounts of shared business affiliation from tenant organizers in our network. In comparison to the later citywide lists, the process of generating this list relied more on qualitative research rather than SQL code. 
 
 Here are landlords from the RTC Worst Evictors List that we found to be associated with a group of Head Officer names registered with HPD: 
 
@@ -104,13 +113,3 @@ Here are landlords from the RTC Worst Evictors List that we found to be associat
 * "A&E REAL ESTATE" — DONALD HASTINGS, MAGGIE MCCORMICK, DOUGLAS EISENBERG
 
 * "UFARATZTA LLC" — 1635 CARROLL LLC,2509 ATLANTIC REALTY LLC,312 EZ REALTY LLC, 437 BMW LLC, 491 EQUITIES LLC, 682 MONTGOMERY LLC, DEAN PARK LLC, DRAM LLC, GAN EAST LLC, M WILHELM, MAUNTAUK PARK LLC, MENDY WILHELM, MMS REALTY LLC, PRESIDENT PLAZA LLC, UFARATZTA LLC, YANKY RODMAN
-
-### Automating the Owner Grouping Process (Citywide List) 
-
-Our Citywide Worst Evictors List used the same data sources and general methodology of our RTC list. However, instead of limiting our analysis to HPD Head Officers, we generated our landlord portfolios using contacts listed as 'Head Officer', 'Individual Owner', or 'Corporate Owner' to catch more properties connected through common ownership. Additionally, we used SQL to automate most of the process of grouping owner contact names together through common business addresses, while still incorporating on-the-ground knowledge from tenants and tenant organizers.
-
-The specific SQL code that groups owner names for the Citywide list can be found in the [worst-evictors-list-citywide.sql file](https://github.com/JustFixNYC/worst-evictors-data/blob/master/sql/worst-evictors-list-citywide.sql) in this repository. You can look at the specific groupings of owner names in the output CSV file generated using the command outlined above. Note that duplicate and near-duplciate portfolios were filtered out to make the [published Citywide list](https://www.worstevictorsnyc.org/evictors-list/citywide/) on the Worst Evictors website.
-
-**Are we missing anybody?** If you think that there are other Head Officers related to the companies we are featuring in our RTC Worst Evictors List, or if you think we made a mistake somewhere, send us a suggestion via our [Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLSfOwTTtRuCSb06_gYR7Zjjm-c0BWXzJlriJHRl8JwDVEnc-0g/viewform?usp=sf_link). 
-
-
