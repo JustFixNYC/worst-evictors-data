@@ -35,7 +35,7 @@ NYCDB_DATASET_DEPENDENCIES = [
     'pluto_18v1',
     'pluto_19v1',
     'rentstab_summary',
-    'rentstab_18',
+    'rentstab_v2',
     # These are custom datasets we monkeypatched in.
     'marshal_evictions_18',
     'marshal_evictions_19',

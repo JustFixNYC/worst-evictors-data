@@ -102,7 +102,7 @@ evictions_by_bbl_with_data as (
 		(select bbl, sum(f.evictions) filings from eviction_filings_1315 f group by bbl) 
 		eviction_filings_by_bbl	using(bbl)
 	left join pluto_19v1 p using(bbl)
-	left join rentstab_18 r using(bbl)
+	left join rentstab_v2 r using(bbl)
 ),
 
 
