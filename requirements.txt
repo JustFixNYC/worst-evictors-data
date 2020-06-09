@@ -1,4 +1,4 @@
-nycdb==0.1.21
+nycdb==0.1.28
 
 # For development
 mypy==0.701
