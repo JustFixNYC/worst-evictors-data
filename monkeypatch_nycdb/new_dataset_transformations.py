@@ -19,3 +19,11 @@ def hpd_contacts_dec_18(dataset):
 
 def hpd_registrations_grouped_by_bbl_dec_18(dataset):
     return to_csv(dataset.files[0].dest)
+
+
+def hpd_contacts_dec_19(dataset):
+    return to_csv(dataset.files[0].dest)
+
+
+def hpd_registrations_grouped_by_bbl_dec_19(dataset):
+    return to_csv(dataset.files[0].dest)

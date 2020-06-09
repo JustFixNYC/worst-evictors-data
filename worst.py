@@ -4,7 +4,6 @@ import subprocess
 import argparse
 import time
 import csv
-import yaml
 from urllib.parse import urlparse
 from typing import NamedTuple, Any, Tuple, Optional, Dict, List
 from pathlib import Path
@@ -30,15 +29,22 @@ GENLIST_RTC_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-rtc-zips.sql'
 
 GENLIST_CITYWIDE_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide.sql'
 
+GENLIST_CITYWIDE_19_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide.sql'
+
 NYCDB_DATASET_DEPENDENCIES = [
     'pluto_18v1',
+    'pluto_19v1',
     'rentstab_summary',
+    'rentstab_18',
     # These are custom datasets we monkeypatched in.
     'marshal_evictions_18',
+    'marshal_evictions_19',
     'hpd_head_officers',
     'eviction_filings_1315',
     'hpd_contacts_dec_18',
-    'hpd_registrations_grouped_by_bbl_dec_18'
+    'hpd_registrations_grouped_by_bbl_dec_18',
+    'hpd_contacts_dec_19',
+    'hpd_registrations_grouped_by_bbl_dec_19'
 ]
 
 
@@ -255,6 +261,9 @@ if __name__ == '__main__':
     parser_genlist_citywide = subparsers.add_parser('list:citywide')
     parser_genlist_citywide.set_defaults(cmd='genlist_citywide')
 
+    parser_genlist_citywide_19 = subparsers.add_parser('list:citywide-19')
+    parser_genlist_citywide_19.set_defaults(cmd='genlist_citywide-19')
+
     args = parser.parse_args()
 
     database_url: str = args.database_url
@@ -269,8 +278,8 @@ if __name__ == '__main__':
         NycDbBuilder(db).build(force_refresh=False)
     elif cmd == 'genlist_rtc':
         genlist(db, GENLIST_RTC_SQLFILE_PATH)
-    elif cmd == 'genlist_citywide':
-        genlist(db, GENLIST_CITYWIDE_SQLFILE_PATH)
+    elif cmd == 'genlist_citywide-19':
+        genlist(db, GENLIST_CITYWIDE_19_SQLFILE_PATH)
     else:
         parser.print_help()
         sys.exit(1)
