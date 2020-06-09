@@ -25,11 +25,11 @@ DATA_DIR = ROOT_DIR / 'data'
 
 SQL_DIR = ROOT_DIR / 'sql'
 
-GENLIST_RTC_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-rtc-zips.sql'
+GENLIST_RTC_18_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-rtc-zips-2018.sql'
 
-GENLIST_CITYWIDE_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide.sql'
+GENLIST_CITYWIDE_18_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide-2018.sql'
 
-GENLIST_CITYWIDE_19_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide.sql'
+GENLIST_CITYWIDE_19_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide-2019.sql'
 
 NYCDB_DATASET_DEPENDENCIES = [
     'pluto_18v1',
@@ -255,14 +255,14 @@ if __name__ == '__main__':
     parser_dbshell = subparsers.add_parser('dbshell')
     parser_dbshell.set_defaults(cmd='dbshell')
 
-    parser_genlist_rtc = subparsers.add_parser('list:rtc')
-    parser_genlist_rtc.set_defaults(cmd='genlist_rtc')
+    parser_genlist_rtc_18 = subparsers.add_parser('list:rtc')
+    parser_genlist_rtc_18.set_defaults(cmd='genlist_rtc_18')
 
-    parser_genlist_citywide = subparsers.add_parser('list:citywide')
-    parser_genlist_citywide.set_defaults(cmd='genlist_citywide')
+    parser_genlist_citywide_18 = subparsers.add_parser('list:citywide-18')
+    parser_genlist_citywide_18.set_defaults(cmd='genlist_citywide_18')
 
     parser_genlist_citywide_19 = subparsers.add_parser('list:citywide-19')
-    parser_genlist_citywide_19.set_defaults(cmd='genlist_citywide-19')
+    parser_genlist_citywide_19.set_defaults(cmd='genlist_citywide_19')
 
     args = parser.parse_args()
 
@@ -276,9 +276,11 @@ if __name__ == '__main__':
         dbshell(db)
     elif cmd == 'builddb':
         NycDbBuilder(db).build(force_refresh=False)
-    elif cmd == 'genlist_rtc':
-        genlist(db, GENLIST_RTC_SQLFILE_PATH)
-    elif cmd == 'genlist_citywide-19':
+    elif cmd == 'genlist_rtc_18':
+        genlist(db, GENLIST_RTC_18_SQLFILE_PATH)
+    elif cmd == 'genlist_citywide_18':
+        genlist(db, GENLIST_CITYWIDE_18_SQLFILE_PATH)
+    elif cmd == 'genlist_citywide_19':
         genlist(db, GENLIST_CITYWIDE_19_SQLFILE_PATH)
     else:
         parser.print_help()
