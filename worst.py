@@ -255,7 +255,7 @@ if __name__ == '__main__':
     parser_dbshell = subparsers.add_parser('dbshell')
     parser_dbshell.set_defaults(cmd='dbshell')
 
-    parser_genlist_rtc_18 = subparsers.add_parser('list:rtc')
+    parser_genlist_rtc_18 = subparsers.add_parser('list:rtc-18')
     parser_genlist_rtc_18.set_defaults(cmd='genlist_rtc_18')
 
     parser_genlist_citywide_18 = subparsers.add_parser('list:citywide-18')
