@@ -1,5 +1,14 @@
 version: '2'
 services:
+  app:
+    build: .
+    working_dir: /app
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://nycdb:nycdb@db/nycdb
   db:
     image: postgres:11
     environment:
