@@ -83,7 +83,7 @@ evictions_by_bbl as (
 		count(*) as evictions
 	from marshal_evictions_18
 	where bbl is not null
-	and evictiontype = any('{R, Residential}')
+	and residentialcommercialind = any('{R, Residential}')
 	group by bbl
 ),
 

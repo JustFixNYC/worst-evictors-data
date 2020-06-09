@@ -59,7 +59,7 @@ with head_officer_evictions as (
 				count(*) as evictions
 				from marshal_evictions_18 
 				where bbl is not null
-				and evictiontype = any('{R,Residential}') 
+				and residentialcommercialind = any('{R,Residential}') 
 				group by bbl) e
 		on h.bbl = e.bbl
 	left join pluto_18v1 p
