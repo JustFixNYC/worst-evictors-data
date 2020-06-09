@@ -59,7 +59,7 @@ Then, to generate a CSV of raw data for the 2019 Worst Evictors list, run:
 python worst.py list:citywide-19 > citywide-evictors-19.csv
 ```
 
-Also, to generate CSVs of raw data citywide and rtc-specific Worst Evictors lists in 2018, run:
+Also, to generate CSVs of raw data for the 2018 citywide and rtc-specific Worst Evictors lists, run:
 
 ```
 python worst.py list:citywide-18 > citywide-evictors-18.csv
