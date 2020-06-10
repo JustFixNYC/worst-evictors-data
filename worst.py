@@ -32,19 +32,18 @@ GENLIST_CITYWIDE_18_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide-2018.
 GENLIST_CITYWIDE_19_SQLFILE_PATH = SQL_DIR / 'worst-evictors-list-citywide-2019.sql'
 
 NYCDB_DATASET_DEPENDENCIES = [
-    'pluto_18v1',
-    'pluto_19v1',
     'rentstab_summary',
     'rentstab_v2',
+    'marshal_evictions',
+    'pluto_18v1',
+    'pluto_19v1',
     # These are custom datasets we monkeypatched in.
-    'marshal_evictions_18',
-    'marshal_evictions_19',
     'hpd_head_officers',
     'eviction_filings_1315',
     'hpd_contacts_dec_18',
     'hpd_registrations_grouped_by_bbl_dec_18',
     'hpd_contacts_dec_19',
-    'hpd_registrations_grouped_by_bbl_dec_19'
+    'hpd_registrations_grouped_by_bbl_dec_19',
 ]
 
 
