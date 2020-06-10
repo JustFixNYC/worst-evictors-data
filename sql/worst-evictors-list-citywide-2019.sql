@@ -95,7 +95,7 @@ evictions_by_bbl_with_data as (
 		coalesce(evictions,0) evictions,
 		coalesce(filings,0) filings,
 		coalesce(p.unitsres,0) unitsres,
-		coalesce(r.soarentstabunits,0) unitsstab2018
+		coalesce(r.uc2018,0) unitsstab2018
 	from hpd_associated_bbls_unnested e
 	left join evictions_by_bbl using(bbl)
 	left join 
