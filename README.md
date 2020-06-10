@@ -11,6 +11,26 @@ Postgres directly on your computer.
 
 Just run `docker-compose run app bash` and you're set.
 
+#### Ensuring enough memory is available
+
+Note that in order for everything to work properly, if
+you're using Docker for OS X or Windows, you may need
+to increase the amount of memory available to Docker
+containers.  Specifically, allocating 4 GB of memory
+and 2 GB of swap should work (the defaults are 2 GB
+and 1 GB, respectively). You can learn more about
+doing this here:
+
+* [Memory resources (OS X)](https://docs.docker.com/docker-for-mac/#resources)
+
+* [Memory resources (Windows)](https://docs.docker.com/docker-for-windows/#resources)
+
+If you haven't provided the containers with enough
+memory, you may get a "Killed" message when running
+the scripts.
+
+#### Uninstallation
+
 Once you're done using this project, if you want to delete
 all data used by the database, you can run:
 
