@@ -1,4 +1,4 @@
-nycdb==0.1.21
+https://github.com/nycdb/nycdb/archive/015fbb81cb32c865d557faee19fdfba3ffaad521.zip#subdirectory=src
 
 # For development
 mypy==0.701

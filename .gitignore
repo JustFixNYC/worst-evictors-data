@@ -4,5 +4,7 @@ venv/
 __pycache__/
 
 # NYCDB datasets
-data/pluto_18v1.zip
-data/changes-summary.csv
+data/*.zip
+data/changes-summary.csv 
+data/marshal_evictions_??.csv
+data/rentstab_counts_for_pluto_19v1_bbls.csv

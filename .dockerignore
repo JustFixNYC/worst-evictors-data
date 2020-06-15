@@ -1,0 +1,7 @@
+venv/
+.mypy_cache/
+.vscode/
+__pycache__/
+
+# Don't bother transferring the data directory.
+data/
