@@ -1,5 +1,5 @@
 This repository contains the data analysis for the
-[worst evictors website](https://github.com/JustFixNYC/worst-evictors-site).
+[worst evictors website](https://github.com/JustFixNYC/worst-evictors-site) for the years __2018 and 2019__.
 
 ## Quick start
 
