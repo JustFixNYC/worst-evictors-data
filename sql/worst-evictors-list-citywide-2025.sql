@@ -89,6 +89,31 @@ evictions_by_bbl as (
 	group by bbl
 ),
 
+-- Step 3b: Count class B/C HPD violations by bbl (2025)
+hpd_violations_bc_by_bbl as (
+	select
+		bbl,
+		count(*) as hpd_violations_bc
+	from hpd_violations
+	where bbl is not null
+		and class = any('{B,C}')
+		and inspectiondate >= date '2025-01-01'
+		and inspectiondate < date '2026-01-01'
+	group by bbl
+),
+
+-- Step 3c: Count HPD complaints by bbl (2025)
+hpd_complaints_by_bbl as (
+	select
+		bbl,
+		count(*) as hpd_complaints
+	from hpd_complaints_and_problems
+	where bbl is not null
+		and receiveddate >= date '2025-01-01'
+		and receiveddate < date '2026-01-01'
+	group by bbl
+),
+
 -- Step 4: Append additional data to associated bbls in unnested table 
 evictions_by_bbl_with_data as (
 	select
@@ -96,10 +121,14 @@ evictions_by_bbl_with_data as (
 		bbl,
 		coalesce(evictions,0) evictions,
 		coalesce(filings,0) filings,
+		coalesce(hpd_violations_bc,0) hpd_violations_bc,
+		coalesce(hpd_complaints,0) hpd_complaints,
 		coalesce(p.unitsres,0) unitsres,
 		coalesce(r.uc2024,0) unitsstab2024
 	from hpd_associated_bbls_unnested e
 	left join evictions_by_bbl using(bbl)
+	left join hpd_violations_bc_by_bbl using(bbl)
+	left join hpd_complaints_by_bbl using(bbl)
 	left join 
 		(
 			select
@@ -127,6 +156,8 @@ hpd_associated_bbls_with_evictions as (
 		a.associated_bbls,
 		sum(evictions) as total_evictions_2025,
 		sum(filings) as total_filings_2025,
+		sum(hpd_violations_bc) as total_hpd_violations_bc_2025,
+		sum(hpd_complaints) as total_hpd_complaints_2025,
 		sum(unitsres) as total_unitsres,
 		sum(unitsstab2024) as total_rs_units_24
 	from evictions_by_bbl_with_data a
@@ -136,6 +167,8 @@ hpd_associated_bbls_with_evictions as (
 -- Step 6: Rejoin data back with HPD associated owners table
 select 
 	total_evictions_2025,
+	total_hpd_violations_bc_2025,
+	total_hpd_complaints_2025,
 	total_unitsres,
 	total_filings_2025,
 	case when (total_unitsres > 0)   
