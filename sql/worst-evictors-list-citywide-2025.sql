@@ -47,14 +47,31 @@ t2 as (
 hpd_associated_owners as (
 select 
 	ll_name,
-	array_agg(distinct address) as ll_business_addresses,
+	array_agg(distinct address order by address) as ll_business_addresses,
 	count(distinct address) as count_ll_business_addresses,
-	array_agg(distinct assoc_ll_name) as associated_ll_names,
+	array_agg(distinct assoc_ll_name order by assoc_ll_name) as associated_ll_names,
 	count(distinct assoc_ll_name) as count_associated_ll_names,
-	array_agg(distinct assoc_bbl) as associated_bbls,
+	array_agg(distinct assoc_bbl order by assoc_bbl) as associated_bbls,
 	count(distinct assoc_bbl) as count_associated_bbls
 from t2
 group by ll_name
+),
+
+-- Step 3a: Collapse to one canonical row per portfolio to avoid duplicates.
+-- The canonical display name is chosen as the lexicographically-smallest associated name.
+hpd_portfolios as (
+select
+	o.associated_bbls,
+	array_agg(distinct n.name order by n.name) as associated_ll_names,
+	array_agg(distinct a.address order by a.address) as ll_business_addresses,
+	cardinality(o.associated_bbls) as count_associated_bbls,
+	count(distinct n.name) as count_associated_ll_names,
+	count(distinct a.address) as count_ll_business_addresses,
+	min(n.name) as portfolio_name
+from hpd_associated_owners o
+left join lateral unnest(o.associated_ll_names) as n(name) on true
+left join lateral unnest(o.ll_business_addresses) as a(address) on true
+group by o.associated_bbls
 ),
 
 ---------------------------------------
@@ -65,7 +82,7 @@ group by ll_name
 hpd_associated_bbls as (
 	select 
 		distinct associated_bbls 
-	from hpd_associated_owners
+	from hpd_portfolios
 ),
 
 -- Step 2: Unnest BBLs from associated_bbls arrays
@@ -178,8 +195,14 @@ select
 	case when (total_unitsres > 0)
 		then round(total_rs_units_24::numeric/total_unitsres::numeric * 100,0)
 		else 0 end pct_rs,
-	a.*
-from hpd_associated_owners a
+	a.portfolio_name as ll_name,
+	a.ll_business_addresses,
+	a.count_ll_business_addresses,
+	a.associated_ll_names,
+	a.count_associated_ll_names,
+	a.associated_bbls,
+	a.count_associated_bbls
+from hpd_portfolios a
 left join hpd_associated_bbls_with_evictions e 
 	on a.associated_bbls = e.associated_bbls
 order by total_evictions_2025 desc nulls last
